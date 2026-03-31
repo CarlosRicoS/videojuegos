@@ -1,0 +1,12 @@
+name: videojuegos-env
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - python=3.11.1
+  - pip
+  - pyinstaller
+  - pip:
+      - pygame-ce
+      - pygbag
+      - esper==2.5
