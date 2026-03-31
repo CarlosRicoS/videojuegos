@@ -8,7 +8,10 @@ CONFIG_FILE_PATH = Path(__file__).parent.parent.parent / "assets" / "cfg"
 CONFIG_FILES = (
     "window", 
     "enemies",
-    "level_01")
+    "level_01",
+    "player",
+    "bullet",
+)
 _CONFIG_STATE: Mapping[str, Any] | None = None
 
 LevelEventKey = tuple[float, str, tuple[int, int]]
@@ -212,3 +215,47 @@ def get_event_position(event_mapping: Mapping[LevelEventKey, bool]) -> tuple[int
 def set_event_triggered(event_mapping: Mapping[LevelEventKey, bool]) -> None:
     event, _ = _get_level_event_entry(event_mapping)
     event_mapping[event] = True
+    
+def get_player_config() -> Mapping[str, Any]:
+    return cast(Mapping[str, Any], get_configurations()["player"])
+
+def get_player_size() -> tuple[int, int]:
+    player_config = get_player_config()
+    size = cast(Mapping[str, Any], player_config["size"])
+    return int(size["x"]), int(size["y"])
+
+def get_player_color() -> tuple[int, int, int]:
+    player_config = get_player_config()
+    color = cast(Mapping[str, Any], player_config["color"])
+    return int(color["r"]), int(color["g"]), int(color["b"])
+
+def get_player_velocity() -> int:
+    player_config = get_player_config()
+    return int(player_config["input_velocity"])
+
+def get_player_spawn_position_config() -> tuple[int, int]:
+    player_spawn_config = get_level_01_config()["player_spawn"]
+    
+    spawn = cast(Mapping[str, Any], player_spawn_config["position"])
+    return int(spawn["x"]), int(spawn["y"])    
+
+def get_level_bullet_limit() -> int:
+    level_config = get_level_01_config()
+    return int(level_config["bullet_limit"])
+
+def get_bullet_config() -> Mapping[str, Any]:
+    return cast(Mapping[str, Any], get_configurations()["bullet"])
+
+def get_bullet_size() -> tuple[int, int]:
+    bullet_config = get_bullet_config()
+    size = cast(Mapping[str, Any], bullet_config["size"])
+    return int(size["x"]), int(size["y"])
+
+def get_bullet_color() -> tuple[int, int, int]:
+    bullet_config = get_bullet_config()
+    color = cast(Mapping[str, Any], bullet_config["color"])
+    return int(color["r"]), int(color["g"]), int(color["b"])
+
+def get_bullet_velocity() -> int:
+    bullet_config = get_bullet_config()
+    return int(bullet_config["velocity"])

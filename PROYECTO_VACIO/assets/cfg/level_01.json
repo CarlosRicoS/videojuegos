@@ -1,4 +1,11 @@
 {
+    "player_spawn": {
+        "position": {
+            "x": 320,
+            "y": 180
+        }
+    },
+    "bullet_limit": 5,
     "enemy_spawn_events": [
         {
             "time": 9.0,
@@ -9,11 +16,27 @@
             }
         },
         {
+            "time": 9.0,
+            "enemy_type": "TypeA",
+            "position": {
+                "x": 100,
+                "y": 100
+            }
+        },
+        {
             "time": 6.0,
             "enemy_type": "TypeB",
             "position": {
                 "x": 500,
                 "y": 200
+            }
+        },
+        {
+            "time": 6.0,
+            "enemy_type": "TypeC",
+            "position": {
+                "x": 200,
+                "y": 300
             }
         },
         {
@@ -62,6 +85,14 @@
             "position": {
                 "x": 540,
                 "y": 260
+            }
+        },
+        {
+            "time": 20.0,
+            "enemy_type": "TypeA",
+            "position": {
+                "x": 50,
+                "y": 50
             }
         }
     ]
