@@ -4,13 +4,18 @@ import pygame
 from src.create.prefab_creator import create_enemy_spawner, create_input_player, create_player_square, create_window, fill_window
 from src.ecs.components.c_input_command import CInputCommand, CommandPhase
 from src.ecs.components.c_velocity import CVelocity
+from src.ecs.systems.s_animation import system_animation
 from src.ecs.systems.s_bullet_lost import system_bullet_lost
 from src.ecs.systems.s_collision_bullet_enemy import system_collision_bullet_enemy
 from src.ecs.systems.s_collision_player_enemy import system_collision_player_enemy
 from src.ecs.systems.s_enemy_spawner import system_enemy_spawner
+from src.ecs.systems.s_explosion_remove import system_explosion_remove
+from src.ecs.systems.s_hunter_follow_player import system_hunter_follow_player
+from src.ecs.systems.s_hunter_state import system_hunter_state
 from src.ecs.systems.s_input_player import system_input_player
 from src.ecs.systems.s_player_limit_screen import system_player_limit_screen
 from src.ecs.systems.s_player_shoot import system_player_shoot
+from src.ecs.systems.s_player_state import system_player_state
 from src.ecs.systems.s_screen_bounce import system_screen_bounce
 from src.ecs.systems.s_movement import system_movement
 from src.ecs.systems.s_rendering import system_rendering
@@ -61,11 +66,16 @@ class GameEngine:
     def _update(self):
         system_enemy_spawner(self.ecs_world, self.elapsed_time)
         system_movement(self.ecs_world, self.delta_time)
+        system_hunter_follow_player(self.ecs_world, self._player_entity)
+        system_player_state(self.ecs_world)
+        system_hunter_state(self.ecs_world)
         system_screen_bounce(self.ecs_world, self.screen)
         system_bullet_lost(self.ecs_world, self.screen)
         system_player_limit_screen(self.ecs_world, self.screen, self._player_entity)
         system_collision_bullet_enemy(self.ecs_world, self._player_entity)
         system_collision_player_enemy(self.ecs_world, self._player_entity)
+        system_explosion_remove(self.ecs_world)
+        system_animation(self.ecs_world, self.delta_time)
         self.ecs_world._clear_dead_entities()
     
     def _draw(self):

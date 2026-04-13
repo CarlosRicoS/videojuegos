@@ -11,6 +11,7 @@ CONFIG_FILES = (
     "level_01",
     "player",
     "bullet",
+    "explosion",
 )
 _CONFIG_STATE: Mapping[str, Any] | None = None
 
@@ -107,6 +108,10 @@ def get_enemy_by_name(enemy_name: str) -> Mapping[str, Any]:
             return enemy_mapping
     raise KeyError(f"Enemy not found: {enemy_name}")
 
+def get_enemy_texture(enemy_name: str) -> str:
+    enemy_mapping = get_enemy_by_name(enemy_name)
+    _, enemy_data = _get_enemy_entry(enemy_mapping)
+    return str(enemy_data["image"])
 
 def _get_enemy_entry(enemy_mapping: Mapping[str, Any]) -> tuple[str, Mapping[str, Any]]:
     if len(enemy_mapping) != 1:
@@ -116,6 +121,45 @@ def _get_enemy_entry(enemy_mapping: Mapping[str, Any]) -> tuple[str, Mapping[str
     enemy_data = cast(Mapping[str, Any], enemy_mapping[enemy_name])
     return enemy_name, enemy_data
 
+def get_hunter_config() -> Mapping[str, Any]:
+    return get_enemy_by_name("Hunter")
+
+def get_hunter_texture() -> str:
+    hunter_mapping = get_hunter_config()
+    _, hunter_data = _get_enemy_entry(hunter_mapping)
+    return str(hunter_data["image"])
+
+def get_hunter_velocity_chase() -> int:
+    hunter_mapping = get_hunter_config()
+    _, hunter_data = _get_enemy_entry(hunter_mapping)
+    return int(hunter_data["velocity_chase"])
+
+def get_hunter_velocity_return() -> int:
+    hunter_mapping = get_hunter_config()
+    _, hunter_data = _get_enemy_entry(hunter_mapping)
+    return int(hunter_data["velocity_return"])
+
+def get_hunter_chase_distance() -> int:
+    hunter_mapping = get_hunter_config()
+    _, hunter_data = _get_enemy_entry(hunter_mapping)
+    return int(hunter_data["distance_start_chase"])
+
+def get_hunter_return_distance() -> int:
+    hunter_mapping = get_hunter_config()
+    _, hunter_data = _get_enemy_entry(hunter_mapping)
+    return int(hunter_data["distance_start_return"])
+
+def get_hunter_number_frames() -> int:
+    hunter_mapping = get_hunter_config()
+    _, hunter_data = _get_enemy_entry(hunter_mapping)
+    animations = cast(Mapping[str, Any], hunter_data["animations"])
+    return int(animations["number_frames"])
+
+def get_hunter_animations() -> dict:
+    hunter_mapping = get_hunter_config()
+    _, hunter_data = _get_enemy_entry(hunter_mapping)
+    animations = cast(Mapping[str, Any], hunter_data["animations"])
+    return dict(animations)
 
 def get_enemy_name(enemy_mapping: Mapping[str, Any]) -> str:
     enemy_name, _ = _get_enemy_entry(enemy_mapping)
@@ -125,19 +169,6 @@ def get_enemy_name(enemy_mapping: Mapping[str, Any]) -> str:
 def get_enemy_config(enemy_mapping: Mapping[str, Any]) -> Mapping[str, Any]:
     _, enemy_data = _get_enemy_entry(enemy_mapping)
     return enemy_data
-
-
-def get_enemy_size(enemy_mapping: Mapping[str, Any]) -> tuple[int, int]:
-    enemy_data = get_enemy_config(enemy_mapping)
-    size = cast(Mapping[str, Any], enemy_data["size"])
-    return int(size["x"]), int(size["y"])
-
-
-def get_enemy_color(enemy_mapping: Mapping[str, Any]) -> tuple[int, int, int]:
-    enemy_data = get_enemy_config(enemy_mapping)
-    color = cast(Mapping[str, Any], enemy_data["color"])
-    return int(color["r"]), int(color["g"]), int(color["b"])
-
 
 def get_enemy_velocity_min(enemy_mapping: Mapping[str, Any]) -> int:
     enemy_data = get_enemy_config(enemy_mapping)
@@ -205,6 +236,8 @@ def get_event_enemy_type(event_mapping: Mapping[LevelEventKey, bool]) -> str:
     event, _ = _get_level_event_entry(event_mapping)
     return str(event[1])
 
+def is_smart_enemy(enemy_type: str) -> bool:
+    return enemy_type == "Hunter"
 
 def get_event_position(event_mapping: Mapping[LevelEventKey, bool]) -> tuple[int, int]:
     event, _ = _get_level_event_entry(event_mapping)
@@ -216,18 +249,46 @@ def set_event_triggered(event_mapping: Mapping[LevelEventKey, bool]) -> None:
     event, _ = _get_level_event_entry(event_mapping)
     event_mapping[event] = True
     
+def get_explosion_config() -> Mapping[str, Any]:
+    return cast(Mapping[str, Any], get_configurations()["explosion"])
+    
+def get_explosion_texture() -> str:
+    explosion_config = get_explosion_config()
+    explosion_texture = cast(Mapping[str, Any], explosion_config["image"])
+    return str(explosion_texture)
+
+def get_explosion_frames_count() -> int:
+    explosion_config = get_explosion_config()
+    explosion_texture = cast(Mapping[str, Any], explosion_config["animations"])
+    return int(explosion_texture["number_frames"])
+
+def get_explosion_animation() -> dict:
+    explosion_config = get_explosion_config()
+    explosion_animation = cast(Mapping[str, Any], explosion_config["animations"])
+    return dict(explosion_animation)
+
 def get_player_config() -> Mapping[str, Any]:
     return cast(Mapping[str, Any], get_configurations()["player"])
 
-def get_player_size() -> tuple[int, int]:
+def get_player_texture() -> str:
     player_config = get_player_config()
-    size = cast(Mapping[str, Any], player_config["size"])
-    return int(size["x"]), int(size["y"])
+    texture = cast(Mapping[str, Any], player_config["image"])
+    return str(texture)
 
-def get_player_color() -> tuple[int, int, int]:
+def get_player_animations() -> dict:
     player_config = get_player_config()
-    color = cast(Mapping[str, Any], player_config["color"])
-    return int(color["r"]), int(color["g"]), int(color["b"])
+    animations = cast(Mapping[str, Any], player_config["animation"])
+    return dict(animations)
+
+def get_animation_index_by_name(animation_name: str, animations: dict) -> int:
+    for index, animation in enumerate(animations):
+        if animation.name == animation_name:
+            return index
+    raise ValueError(f"Animation '{animation_name}' not found")
+
+def get_player_frames_count() -> int:
+    animations = get_player_animations()
+    return int(animations["number_frames"])
 
 def get_player_velocity() -> int:
     player_config = get_player_config()
@@ -240,21 +301,16 @@ def get_player_spawn_position_config() -> tuple[int, int]:
     return int(spawn["x"]), int(spawn["y"])    
 
 def get_level_bullet_limit() -> int:
-    level_config = get_level_01_config()
-    return int(level_config["bullet_limit"])
+    level_config = get_level_01_config()["player_spawn"]
+    return int(level_config["max_bullets"])
 
 def get_bullet_config() -> Mapping[str, Any]:
     return cast(Mapping[str, Any], get_configurations()["bullet"])
 
-def get_bullet_size() -> tuple[int, int]:
+def get_bullet_texture() -> str:
     bullet_config = get_bullet_config()
-    size = cast(Mapping[str, Any], bullet_config["size"])
-    return int(size["x"]), int(size["y"])
-
-def get_bullet_color() -> tuple[int, int, int]:
-    bullet_config = get_bullet_config()
-    color = cast(Mapping[str, Any], bullet_config["color"])
-    return int(color["r"]), int(color["g"]), int(color["b"])
+    texture = cast(Mapping[str, Any], bullet_config["image"])
+    return str(texture)
 
 def get_bullet_velocity() -> int:
     bullet_config = get_bullet_config()
