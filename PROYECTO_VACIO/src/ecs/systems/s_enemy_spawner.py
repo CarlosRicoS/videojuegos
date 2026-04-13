@@ -7,7 +7,7 @@ from src.ecs.components.c_surface import CSurface
 from src.ecs.components.c_transform import CTransform
 from src.ecs.components.c_velocity import CVelocity
 from src.ecs.components.tags.c_tag_enemy import CTagEnemy
-from src.utils.config_loader import LevelEventState, get_enemy_by_name, get_enemy_color, get_enemy_size, get_enemy_velocity_range, get_event_enemy_type, get_event_position, get_event_time, set_event_triggered
+from src.utils.config_loader import LevelEventState, get_enemy_by_name, get_enemy_texture, get_enemy_velocity_range, get_event_enemy_type, get_event_position, get_event_time, set_event_triggered
 
 def system_enemy_spawner(world: esper.World, elapsed_time: float):
     enemy_spawner: CEnemySpawner
@@ -30,9 +30,8 @@ def system_enemy_spawner(world: esper.World, elapsed_time: float):
             enemy = get_enemy_by_name(enemy_type)
             create_enemy_square(
                 world,
-                size=pygame.Vector2(get_enemy_size(enemy)),
+                texture=pygame.image.load(get_enemy_texture(enemy_type)).convert_alpha(),
                 position=pygame.Vector2(get_event_position(next_event)),
-                color=pygame.Color(get_enemy_color(enemy)),
                 velocity=pygame.Vector2(get_enemy_velocity_range(enemy))
             )
             set_event_triggered(next_event)
