@@ -15,7 +15,6 @@ def system_hunter_follow_player(world: esper.World, player_entity: int):
     c_t: CTransform
     c_v: CVelocity
     c_hs: CHunterState
-    RETURN_THRESHOLD = 2.0 
     
 
     for entity, (c_t, c_v, c_hs, _) in hunter_entities:
@@ -32,27 +31,22 @@ def system_hunter_follow_player(world: esper.World, player_entity: int):
                 _follow_player(c_t, c_v, player_transform)
 
         elif c_hs.state == HunterState.MOVE:
-            # Si el cazador se aleja mucho, cambia a REGRESAR
-            if dist_origin + RETURN_THRESHOLD >= get_hunter_return_distance():
-                # if dist_player <= get_hunter_chase_distance():
-                #     _return_to_origin(c_t, c_v, c_hs, dist_origin)
-                # else:
+            # # Si el cazador se aleja mucho, cambia a REGRESAR
+            if dist_origin >= get_hunter_return_distance():
+                c_hs.is_returning = True
                 _return_to_origin(c_t, c_v, c_hs, dist_origin)
             else:
-                # if dist_player <= get_hunter_chase_distance():
-                _follow_player(c_t, c_v, player_transform)
-                # else:
-                #     _return_to_origin(c_t, c_v, c_hs, dist_origin)
-            # elif dist_player > get_hunter_chase_distance():
-            #     # Si el jugador se aleja del rango de persecución, regreso
-            #     _return_to_origin(c_t, c_v, c_hs, dist_origin)
-            # elif dist_player <= get_hunter_chase_distance() and dist_origin <= get_hunter_return_distance():
-            #     # Perseguir activamente
-            #     _follow_player(c_t, c_v, player_transform)
+                if dist_player <= get_hunter_chase_distance() and c_hs.is_returning == False:
+                    _follow_player(c_t, c_v, player_transform)
+                else:
+                    _return_to_origin(c_t, c_v, c_hs, dist_origin)
 
 def _follow_player(c_t: CTransform, c_v: CVelocity, player_transform: CTransform):
-    dir_player = (player_transform.pos - c_t.pos).normalize()
-    c_v.vel = dir_player * get_hunter_velocity_chase()     
+    dir_player = player_transform.pos - c_t.pos
+    if dir_player.length_squared() > 0:
+        c_v.vel = dir_player.normalize() * get_hunter_velocity_chase()
+    else:
+        c_v.vel = pygame.Vector2(0, 0)
     
 def _return_to_origin(c_t: CTransform, c_v: CVelocity, c_hs: CHunterState, dist_origin: float):
     dir_origin = (c_hs.origin - c_t.pos).normalize()
@@ -65,4 +59,6 @@ def _return_to_origin(c_t: CTransform, c_v: CVelocity, c_hs: CHunterState, dist_
         # Llegada oficial
         c_v.vel = pygame.Vector2(0, 0)
         c_t.pos = c_hs.origin.copy()
-        c_hs.state = HunterState.IDLE         
+        c_hs.state = HunterState.IDLE    
+        c_hs.is_returning = False
+             

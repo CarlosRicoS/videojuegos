@@ -19,6 +19,7 @@ def system_player_limit_screen(world: esper.World,
     if player_rect.right > screen_rect.width or player_rect.left < 0:
         player_rect.clamp_ip(screen_rect)
         pl_t.pos.x = player_rect.x
+        player_rect = CSurface.get_area_relative(pl_s.area, pl_t.pos)
         
     if player_rect.bottom > screen_rect.height or player_rect.top < 0:
         player_rect.clamp_ip(screen_rect)
