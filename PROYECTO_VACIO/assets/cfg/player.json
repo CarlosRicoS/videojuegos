@@ -1,5 +1,7 @@
 {
     "image": "assets/img/player.png",
+    "sound": "assets/snd/hum.ogg",
+    "lifes": 3,
     "animation": {
         "number_frames": 4,
         "list": [
@@ -17,5 +19,7 @@
             }
         ]
     },
-    "input_velocity": 100
+    "input_velocity": 100,
+    "win_sound": "assets/snd/win.ogg",
+    "lose_sound": "assets/snd/lose.ogg"
 }

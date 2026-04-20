@@ -1,20 +1,25 @@
 {
     "AsteroidA": {
+        "sound": "assets/snd/asteroid.ogg",
         "image": "assets/img/asteroid_01.png",
         "velocity_min": 25,
         "velocity_max": 50
     },
     "AsteroidB": {
+        "sound": "assets/snd/asteroid.ogg",
         "image": "assets/img/asteroid_02.png",
         "velocity_min": 50,
         "velocity_max": 75
     },
     "AsteroidC": {
+        "sound": "assets/snd/asteroid.ogg",
         "image": "assets/img/asteroid_03.png",
         "velocity_min": 75,
         "velocity_max": 100
     },
     "AsteroidD": {
+        "sound": "assets/snd/asteroid.ogg",
+
         "image": "assets/img/asteroid_04.png",
         "velocity_min": 100,
         "velocity_max": 125
@@ -41,6 +46,7 @@
         "velocity_chase": 75,
         "velocity_return": 140,
         "distance_start_chase": 100,
-        "distance_start_return": 200
+        "distance_start_return": 200,
+        "sound_chase": "assets/snd/ufo.ogg"
     }
 }

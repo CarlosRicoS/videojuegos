@@ -1,0 +1,7 @@
+{
+    "image": "assets/img/bullet_especial.png",
+    "sound": "assets/snd/swing.ogg",
+    "reload_time": 10,
+    "velocity": 50,
+    "radius": 60
+}

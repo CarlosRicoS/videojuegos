@@ -7,7 +7,6 @@ from src.ecs.components.c_transform import CTransform
 from src.ecs.components.tags.c_tag_bullet import CTagBullet
 from src.ecs.components.tags.c_tag_enemy import CTagEnemy
 from src.ecs.components.tags.c_tag_hunter import CTagHunter
-from src.utils.config_loader import get_player_spawn_position_config
 
 def system_collision_bullet_enemy(world: esper.World, player_entity: int) -> None:
     enemies = world.get_components(CSurface, CTransform, CTagEnemy)

@@ -8,6 +8,7 @@ from src.ecs.components.c_transform import CTransform
 from src.ecs.components.c_velocity import CVelocity
 from src.ecs.components.tags.c_tag_bullet import CTagBullet
 from src.ecs.components.tags.c_tag_player import CTagPlayer
+from src.engine.service_locator import ServiceLocator
 from src.utils.config_loader import get_bullet_texture, get_bullet_velocity, get_level_bullet_limit
 
 
@@ -24,7 +25,7 @@ def system_player_shoot(world: esper.World,
     if len(bullets) < get_level_bullet_limit():
         direction = bullet_direction - player_rect.center
     
-        bullet_texture = pygame.image.load(get_bullet_texture()).convert_alpha()
+        bullet_texture = ServiceLocator.images_service.get(get_bullet_texture())
         bullet_size = bullet_texture.get_size()
         
         create_bullet_square(

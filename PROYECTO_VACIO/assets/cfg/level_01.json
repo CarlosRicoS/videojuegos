@@ -4,7 +4,8 @@
             "x": 320,
             "y": 180
         },
-        "max_bullets": 4
+        "max_bullets": 4,
+        "max_mines": 5
     },
     "enemy_spawn_events": [
         {

@@ -11,7 +11,9 @@ CONFIG_FILES = (
     "level_01",
     "player",
     "bullet",
-    "explosion",
+    "explosion", 
+    "interface",
+    "special_bullet"
 )
 _CONFIG_STATE: Mapping[str, Any] | None = None
 
@@ -113,6 +115,11 @@ def get_enemy_texture(enemy_name: str) -> str:
     _, enemy_data = _get_enemy_entry(enemy_mapping)
     return str(enemy_data["image"])
 
+def get_enemy_sound(enemy_name: str) -> str:
+    enemy_mapping = get_enemy_by_name(enemy_name)
+    _, enemy_data = _get_enemy_entry(enemy_mapping)
+    return str(enemy_data["sound"])
+
 def _get_enemy_entry(enemy_mapping: Mapping[str, Any]) -> tuple[str, Mapping[str, Any]]:
     if len(enemy_mapping) != 1:
         raise ValueError("Enemy mapping must contain exactly one enemy entry.")
@@ -128,6 +135,11 @@ def get_hunter_texture() -> str:
     hunter_mapping = get_hunter_config()
     _, hunter_data = _get_enemy_entry(hunter_mapping)
     return str(hunter_data["image"])
+
+def get_hunter_chase_sound() -> str:
+    hunter_mapping = get_hunter_config()
+    _, hunter_data = _get_enemy_entry(hunter_mapping)
+    return str(hunter_data["sound_chase"])
 
 def get_hunter_velocity_chase() -> int:
     hunter_mapping = get_hunter_config()
@@ -173,7 +185,6 @@ def get_enemy_config(enemy_mapping: Mapping[str, Any]) -> Mapping[str, Any]:
 def get_enemy_velocity_min(enemy_mapping: Mapping[str, Any]) -> int:
     enemy_data = get_enemy_config(enemy_mapping)
     return int(enemy_data["velocity_min"])
-
 
 def get_enemy_velocity_max(enemy_mapping: Mapping[str, Any]) -> int:
     enemy_data = get_enemy_config(enemy_mapping)
@@ -267,6 +278,11 @@ def get_explosion_animation() -> dict:
     explosion_animation = cast(Mapping[str, Any], explosion_config["animations"])
     return dict(explosion_animation)
 
+def get_explosion_sound() -> str:
+    explosion_config = get_explosion_config()
+    explosion_sound = cast(Mapping[str, Any], explosion_config["sound"])
+    return str(explosion_sound)
+
 def get_player_config() -> Mapping[str, Any]:
     return cast(Mapping[str, Any], get_configurations()["player"])
 
@@ -274,6 +290,25 @@ def get_player_texture() -> str:
     player_config = get_player_config()
     texture = cast(Mapping[str, Any], player_config["image"])
     return str(texture)
+
+def get_player_lifes() -> int:
+    player_config = get_player_config()
+    return int(player_config["lifes"])
+
+def get_player_sound() -> str:
+    player_config = get_player_config()
+    sound = cast(Mapping[str, Any], player_config["sound"])
+    return str(sound)
+
+def get_player_win_sound() -> str:
+    player_config = get_player_config()
+    sound = cast(Mapping[str, Any], player_config["win_sound"])
+    return str(sound)
+
+def get_player_lose_sound() -> str:
+    player_config = get_player_config()
+    sound = cast(Mapping[str, Any], player_config["lose_sound"])
+    return str(sound)
 
 def get_player_animations() -> dict:
     player_config = get_player_config()
@@ -304,6 +339,10 @@ def get_level_bullet_limit() -> int:
     level_config = get_level_01_config()["player_spawn"]
     return int(level_config["max_bullets"])
 
+def get_level_mine_limit() -> int:
+    level_config = get_level_01_config()["player_spawn"]
+    return int(level_config["max_mines"])
+
 def get_bullet_config() -> Mapping[str, Any]:
     return cast(Mapping[str, Any], get_configurations()["bullet"])
 
@@ -312,6 +351,174 @@ def get_bullet_texture() -> str:
     texture = cast(Mapping[str, Any], bullet_config["image"])
     return str(texture)
 
+def get_bullet_sound() -> str:
+    bullet_config = get_bullet_config()
+    sound = cast(Mapping[str, Any], bullet_config["sound"])
+    return str(sound)
+
 def get_bullet_velocity() -> int:
     bullet_config = get_bullet_config()
     return int(bullet_config["velocity"])
+
+def get_interface_config() -> Mapping[str, Any]:
+    return cast(Mapping[str, Any], get_configurations()["interface"])
+
+def get_interface_font() -> str:
+    interface_config = get_interface_config()
+    font = cast(Mapping[str, Any], interface_config["font"])
+    return str(font)
+
+def get_interface_title_config() -> Mapping[str, Any]:
+    interface_config = get_interface_config()
+    title_config = cast(Mapping[str, Any], interface_config["title"])
+    return title_config
+
+def get_interface_title_text() -> str:
+    title_config = get_interface_title_config()
+    return str(title_config["text"])
+
+def get_interface_title_color() -> tuple[int, int, int]:
+    title_config = get_interface_title_config()
+    color = cast(Mapping[str, Any], title_config["color"])
+    return int(color["r"]), int(color["g"]), int(color["b"])
+
+def get_interface_title_size() -> int:
+    title_config = get_interface_title_config()
+    return int(title_config["size"])
+
+def get_interface_instructions_config() -> Mapping[str, Any]:
+    interface_config = get_interface_config()
+    instructions_config = cast(Mapping[str, Any], interface_config["instructions"])
+    return instructions_config
+
+def get_interface_instructions_text() -> str:
+    instructions_config = get_interface_instructions_config()
+    return str(instructions_config["text"])
+
+def get_interface_instructions_color() -> tuple[int, int, int]:
+    instructions_config = get_interface_instructions_config()
+    color = cast(Mapping[str, Any], instructions_config["color"])
+    return int(color["r"]), int(color["g"]), int(color["b"])
+
+def get_interface_instructions_size() -> int:
+    instructions_config = get_interface_instructions_config()
+    return int(instructions_config["size"])
+
+def get_interface_special_powers_label_config() -> Mapping[str, Any]:
+    interface_config = get_interface_config()
+    label_config = cast(Mapping[str, Any], interface_config["special_powers_label"])
+    return label_config
+
+def get_interface_special_powers_label_text() -> str:
+    label_config = get_interface_special_powers_label_config()
+    return str(label_config["text"])
+
+def get_interface_special_powers_label_color() -> tuple[int, int, int]:
+    label_config = get_interface_special_powers_label_config()
+    color = cast(Mapping[str, Any], label_config["color"])
+    return int(color["r"]), int(color["g"]), int(color["b"])
+
+def get_interface_special_powers_label_size() -> int:
+    label_config = get_interface_special_powers_label_config()
+    return int(label_config["size"])
+
+def get_interface_load_config() -> Mapping[str, Any]:
+    interface_config = get_interface_config()
+    load_config = cast(Mapping[str, Any], interface_config["load"])
+    return load_config
+
+def get_interface_load_text() -> str:
+    load_config = get_interface_load_config()
+    return str(load_config["text"])
+
+def get_interface_load_color() -> tuple[int, int, int]:
+    load_config = get_interface_load_config()
+    color = cast(Mapping[str, Any], load_config["color"])
+    return int(color["r"]), int(color["g"]), int(color["b"])
+
+def get_interface_load_size() -> int:
+    load_config = get_interface_load_config()
+    return int(load_config["size"])
+
+def get_interface_end_game_config() -> Mapping[str, Any]:
+    interface_config = get_interface_config()
+    end_game_config = cast(Mapping[str, Any], interface_config["end_game"])
+    return end_game_config
+
+def get_interface_win_text() -> str:
+    end_game_config = get_interface_end_game_config()
+    return str(end_game_config["win"])
+
+def get_interface_lose_text() -> str:
+    end_game_config = get_interface_end_game_config()
+    return str(end_game_config["lose"])
+
+def get_interface_end_game_color() -> tuple[int, int, int]:
+    end_game_config = get_interface_end_game_config()
+    color = cast(Mapping[str, Any], end_game_config["color"])
+    return int(color["r"]), int(color["g"]), int(color["b"])
+
+def get_interface_end_game_size() -> int:
+    end_game_config = get_interface_end_game_config()
+    return int(end_game_config["size"])
+
+def get_interface_pause_config() -> Mapping[str, Any]:
+    interface_config = get_interface_config()
+    pause_config = cast(Mapping[str, Any], interface_config["pause"])
+    return pause_config
+
+def get_interface_pause_text() -> str:
+    pause_config = get_interface_pause_config()
+    return str(pause_config["text"])
+
+def get_interface_pause_color() -> tuple[int, int, int]:
+    pause_config = get_interface_pause_config()
+    color = cast(Mapping[str, Any], pause_config["color"])
+    return int(color["r"]), int(color["g"]), int(color["b"])
+
+def get_interface_pause_size() -> int:
+    pause_config = get_interface_pause_config()
+    return int(pause_config["size"])
+
+def get_interface_player_lifes_config() -> Mapping[str, Any]:
+    interface_config = get_interface_config()
+    lifes_config = cast(Mapping[str, Any], interface_config["player_lifes"])
+    return lifes_config
+
+def get_interface_player_lifes_text() -> str:
+    lifes_config = get_interface_player_lifes_config()
+    return str(lifes_config["text"])
+
+def get_interface_player_lifes_color() -> tuple[int, int, int]:
+    lifes_config = get_interface_player_lifes_config()
+    color = cast(Mapping[str, Any], lifes_config["color"])
+    return int(color["r"]), int(color["g"]), int(color["b"])
+
+def get_interface_player_lifes_size() -> int:
+    lifes_config = get_interface_player_lifes_config()
+    return int(lifes_config["size"])
+
+def get_special_bullet_config() -> Mapping[str, Any]:
+    return cast(Mapping[str, Any], get_configurations()["special_bullet"])
+
+def get_special_bullet_texture() -> str:
+    special_bullet_config = get_special_bullet_config()
+    texture = cast(Mapping[str, Any], special_bullet_config["image"])
+    return str(texture)
+
+def get_special_bullet_reload_time() -> float:
+    special_bullet_config = get_special_bullet_config()
+    return float(special_bullet_config["reload_time"])
+
+def get_special_bullet_velocity() -> int:
+    special_bullet_config = get_special_bullet_config()
+    return int(special_bullet_config["velocity"])
+
+def get_special_bullet_radius() -> int:
+    special_bullet_config = get_special_bullet_config()
+    return int(special_bullet_config["radius"])   
+
+def get_special_bullet_sound() -> str:
+    special_bullet_config = get_special_bullet_config()
+    sound = cast(Mapping[str, Any], special_bullet_config["sound"])
+    return str(sound) 
